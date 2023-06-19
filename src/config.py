@@ -1,4 +1,3 @@
-
 class Config:
     ENVIRONMENT = "production"
     DEBUG = False

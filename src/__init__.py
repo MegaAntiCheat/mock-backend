@@ -5,8 +5,8 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
-from src.config import Config, DevelopmentConfig
 from src.api import api
+from src.config import Config, DevelopmentConfig
 
 
 def create_app(config: Config | None = None):
