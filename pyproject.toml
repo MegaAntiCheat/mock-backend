@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=63.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["src"]
+
+[project]
+name = "mock-backend"
+
+version = "0.0.0"
+
+description = "Repo For Prototyping the Backend"
+
+requires-python = ">=3.10"
+
+dependencies = [
+  "flask",
+  "flask-cors",
+  "gunicorn",
+  "click",
+  "sqlalchemy",
+  "alembic"
+]
+
+[project.scripts]
+workers = "src.cli:workers"
+
+[project.optional-dependencies]
+dev = [
+    "flake8>=4.0.1",
+    "pep8-naming>=0.13.0",
+    "flake8-docstrings>=1.6.0",
+    "pytest>=7.1.2",
+    "pytest-cov>=3.0.0",
+    "isort>=5.10.1",
+    "black>=22.8.0",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 120

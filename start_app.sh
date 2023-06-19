@@ -1,0 +1,1 @@
+exec gunicorn -b 0.0.0.0:80 --workers 8 --access-logfile - --error-logfile - app:app
