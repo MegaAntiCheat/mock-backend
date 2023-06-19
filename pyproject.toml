@@ -20,7 +20,7 @@ dependencies = [
   "gunicorn",
   "click",
   "sqlalchemy",
-  "alembic"
+  "alembic",
 ]
 
 [project.scripts]
