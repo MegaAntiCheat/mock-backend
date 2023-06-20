@@ -15,6 +15,10 @@ class RequestType(Enum):
     START = 1
     END = 2
 
+    @classmethod
+    def valid_request_types(cls) -> set:
+        return (cls.START, cls.END)
+
 
 REQUIRED_GET_ARGS = ["server_steam_id", "request_type"]
 VALID_GET_ARGS = REQUIRED_GET_ARGS
@@ -32,8 +36,13 @@ class DemoManagerResource(MethodView):
             return validated
 
         try:
-            server_steam_id = kwargs["server_steam_id"]
             request_type = int(kwargs["request_type"])
+            if request_type not in RequestType.valid_request_types():
+                return jsonify(f"Expected request type to be one of {RequestType.valid_request_types()}"), 400
+
+            # check if there is already an instance from this user (use key as this is 1-1 with steam id)
+            server_steam_id = kwargs["server_steam_id"]
+
         except ValueError:
             return jsonify("Expected an integer!"), 400
 

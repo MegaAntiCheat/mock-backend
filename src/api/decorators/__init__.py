@@ -3,13 +3,19 @@ from functools import wraps
 from flask import jsonify, request
 
 
+def is_valid_megabase_key(key: str) -> bool:
+    """Perform some bs lookup eventually to validate this."""
+    print(key)
+    return True
+
+
 def validate_token(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         """Verifies megabase api key header."""
-        for k in request.headers.keys():
+        for k in request.args.keys():
             if k.lower() == "megabase_key":
-                key = request.headers.get("megabase_key")
+                key = request.args.get("megabase_key")
                 break
             else:
                 return jsonify("Unauthorized"), 401

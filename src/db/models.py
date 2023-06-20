@@ -22,7 +22,7 @@ class Reviews(Base):
     __tablename__ = "reviews"
 
     reviewer_steam_id = sa.Column("reviewer_steam_id", sa.String, primary_key=True)
-    demo_id = sa.Column("demo_id", sa.String, db.ForeignKey("demo_metadata.demo_id"), primary_key=True)
+    demo_id = sa.Column("demo_id", sa.String, sa.ForeignKey("demo_metadata.demo_id"), primary_key=True)
     cheat_types = sa.Column("cheat_types", sa.Text, nullable=False)
 
 
@@ -35,9 +35,9 @@ class DemoMetadata(Base):
 
 
 class PollingSessions(Base):
-    __tablename__ == "polling_sessions"
+    __tablename__ = "polling_sessions"
 
-    polling_id = sa.Column("polling_id", sa.String, nullable=False)
-    is_active = sa.Column("is_active", sa.Bool, nullable=False)
+    polling_id = sa.Column("polling_id", sa.String, nullable=False, primary_key=True)
+    is_active = sa.Column("is_active", sa.Boolean, nullable=False)
     polling_frequency_ms = sa.Column("polling_frequency_ms", sa.Integer, nullable=False)
     duration_seconds = sa.Column("duration_seconds", sa.String)

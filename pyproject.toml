@@ -21,6 +21,7 @@ dependencies = [
   "click",
   "sqlalchemy",
   "alembic",
+  "psycopg2-binary",
 ]
 
 [project.scripts]

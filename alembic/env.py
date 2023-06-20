@@ -2,8 +2,9 @@ import os
 import sys
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import engine_from_config, pool
+
+from alembic import context
 
 config = context.config
 
@@ -12,7 +13,7 @@ fileConfig(config.config_file_name)
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_dir)
 
-from models import DemoMetadata, PollingSessions, Reports, Reviews
+from src.db.models import DemoMetadata, PollingSessions, Reports, Reviews
 
 target_metadata = context.config.get_main_option("sqlalchemy.url")
 

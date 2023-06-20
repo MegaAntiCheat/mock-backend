@@ -4,3 +4,4 @@ venv
 *.pyc
 .eggs
 *.egg-info
+data
