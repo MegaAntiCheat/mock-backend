@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class Reports(Base):
+class Report(Base):
     __tablename__ = "reports"
 
     upload_time = sa.Column("upload_time", sa.types.TIMESTAMP(timezone=True), primary_key=True)
@@ -18,7 +18,7 @@ class Reports(Base):
     demo_id = sa.Column("demo_id", sa.String, sa.ForeignKey("demo_metadata.demo_id"), nullable=False)
 
 
-class Reviews(Base):
+class Review(Base):
     __tablename__ = "reviews"
 
     reviewer_steam_id = sa.Column("reviewer_steam_id", sa.String, primary_key=True)
@@ -34,10 +34,12 @@ class DemoMetadata(Base):
     timeseries_data = sa.Column("timeseries_data", JSON)
 
 
-class PollingSessions(Base):
+class PollingSession(Base):
     __tablename__ = "polling_sessions"
 
-    polling_id = sa.Column("polling_id", sa.String, nullable=False, primary_key=True)
+    polling_session_id = sa.Column("polling_session_id", sa.String, nullable=False, primary_key=True)
+    megabase_user_key = sa.Column("megabase_user_key", sa.String, nullable=False)
+    server_steamid64 = sa.Column("server_steamid64", sa.String, nullable=False)
     is_active = sa.Column("is_active", sa.Boolean, nullable=False)
-    polling_frequency_ms = sa.Column("polling_frequency_ms", sa.Integer, nullable=False)
-    duration_seconds = sa.Column("duration_seconds", sa.String)
+    start_time = sa.Column("start_time", sa.types.TIMESTAMP(timezone=True), nullable=False)
+    end_time = sa.Column("end_time", sa.types.TIMESTAMP(timezone=True))

@@ -14,8 +14,8 @@ def validate_token(f):
     def wrapper(*args, **kwargs):
         """Verifies megabase api key header."""
         for k in request.args.keys():
-            if k.lower() == "megabase_key":
-                key = request.args.get("megabase_key")
+            if k.lower() == "megabase_user_key":
+                key = request.args.get("megabase_user_key")
                 break
             else:
                 return jsonify("Unauthorized"), 401

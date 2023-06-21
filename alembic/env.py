@@ -13,7 +13,7 @@ fileConfig(config.config_file_name)
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_dir)
 
-from src.db.models import DemoMetadata, PollingSessions, Reports, Reviews
+from src.db.models import DemoMetadata, PollingSession, Report, Review
 
 target_metadata = context.config.get_main_option("sqlalchemy.url")
 

@@ -42,10 +42,12 @@ def upgrade() -> None:
 
     op.create_table(
         "polling_sessions",
-        sa.Column("polling_id", sa.String(), nullable=False, primary_key=True),
+        sa.Column("polling_session_id", sa.String(), nullable=False, primary_key=True),
+        sa.Column("megabase_user_key", sa.String(), nullable=False),
+        sa.Column("server_steamid64", sa.String(), nullable=False),
         sa.Column("is_active", sa.Boolean(), nullable=False),
-        sa.Column("polling_frequency_ms", sa.Integer(), nullable=False),
-        sa.Column("duration_seconds", sa.String()),
+        sa.Column("start_time", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("end_time", sa.DateTime(timezone=True)),
     )
 
 

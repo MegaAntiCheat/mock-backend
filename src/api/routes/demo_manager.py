@@ -7,6 +7,7 @@ from enum import Enum
 from flask import jsonify, request
 from flask.views import MethodView
 
+from src import utils
 from src.api.decorators import validate_token
 from src.api.routes import _validate_args
 
@@ -17,10 +18,10 @@ class RequestType(Enum):
 
     @classmethod
     def valid_request_types(cls) -> set:
-        return (cls.START, cls.END)
+        return (cls.START.value, cls.END.value)
 
 
-REQUIRED_GET_ARGS = ["server_steam_id", "request_type"]
+REQUIRED_GET_ARGS = ["megabase_user_key", "server_steam_id", "request_type"]
 VALID_GET_ARGS = REQUIRED_GET_ARGS
 
 
@@ -41,7 +42,18 @@ class DemoManagerResource(MethodView):
                 return jsonify(f"Expected request type to be one of {RequestType.valid_request_types()}"), 400
 
             # check if there is already an instance from this user (use key as this is 1-1 with steam id)
+            megabase_user_key = kwargs["megabase_user_key"]
             server_steam_id = kwargs["server_steam_id"]
+            if utils.is_active_session(megabase_user_key):
+                return (
+                    jsonify(
+                        f"User is already actively in a session, please close it out before requesting a new session!"
+                    ),
+                    200,
+                )
+
+            polling_session_id = utils.start_demo_session(megabase_user_key, server_steam_id)
+            return jsonify(f"User started a session with {polling_session_id}!"), 200
 
         except ValueError:
             return jsonify("Expected an integer!"), 400

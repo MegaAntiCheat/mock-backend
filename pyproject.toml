@@ -22,6 +22,7 @@ dependencies = [
   "sqlalchemy",
   "alembic",
   "psycopg2-binary",
+  "requests",
 ]
 
 [project.scripts]
