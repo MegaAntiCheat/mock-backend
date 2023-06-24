@@ -29,7 +29,7 @@ class DemoManagerResource(MethodView):
     """API resource for managing demo start and end times from the client."""
 
     @validate_token
-    def get(self):
+    def post(self):
         """Get channels for a given system and dataset."""
         kwargs = request.args.to_dict()
         validated = _validate_args(kwargs, REQUIRED_GET_ARGS, VALID_GET_ARGS)
@@ -44,7 +44,8 @@ class DemoManagerResource(MethodView):
             # check if there is already an instance from this user (use key as this is 1-1 with steam id)
             megabase_user_key = kwargs["megabase_user_key"]
             server_steam_id = kwargs["server_steam_id"]
-            if utils.is_active_session(megabase_user_key):
+            is_active_session = utils.is_active_session(megabase_user_key)
+            if is_active_session:
                 return (
                     jsonify(
                         f"User is already actively in a session, please close it out before requesting a new session!"
@@ -52,15 +53,14 @@ class DemoManagerResource(MethodView):
                     200,
                 )
 
-            polling_session_id = utils.start_demo_session(megabase_user_key, server_steam_id)
-            return jsonify(f"User started a session with {polling_session_id}!"), 200
-
         except ValueError:
             return jsonify("Expected an integer!"), 400
 
         if request_type == RequestType.START:
-            # TODO start polling the server the user is on...
-            return jsonify(f"Starting server poll worker on {server_steam_id=}"), 200
+            polling_session_id = utils.start_demo_session(megabase_user_key, server_steam_id)
+            return jsonify(f"User started a session with {polling_session_id}!"), 200
         elif request_type == RequestType.END:
-            # TODO stop polling the server the user is on...
-            jsonify(f"Stopping server poll worker on {server_steam_id=}"), 200
+            if not is_active_session:
+                return jsonify(f"User is not in a session, cannot close session out!"), 400
+            polling_session_id = utils.stop_demo_session(megabase_user_key, server_steam_id)
+            jsonify(f"User ended a session with {polling_session_id}!"), 200

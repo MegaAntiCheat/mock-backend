@@ -19,6 +19,14 @@ else:
 
 
 def is_active_session(megabase_user_key: str) -> bool:
+    """Return if the current user is in a session or not.
+
+    Args:
+        megabase_user_key: API key associated with the user
+
+    Returns:
+        truth value of if the user is in a polling session
+    """
     with Session() as session:
         sql = sa.select(PollingSession).where(
             PollingSession.megabase_user_key == "megabase_user_key", PollingSession.is_active == True
@@ -32,6 +40,15 @@ def is_active_session(megabase_user_key: str) -> bool:
 
 
 def start_demo_session(megabase_user_key: str, server_steam_id: str):
+    """Start a demo session in the database from a request.
+
+    Args:
+        megabase_user_key: API key associated with the user
+        server_steam_id: Steam ID of the server
+
+    Returns:
+        the ID of the polling session started.
+    """
     try:
         server_steamid64 = int(server_steam_id)
     except ValueError:
@@ -51,6 +68,39 @@ def start_demo_session(megabase_user_key: str, server_steam_id: str):
         session.commit()
 
     return polling_session_id
+
+
+def stop_demo_session(megabase_user_key: str, server_steam_id: str) -> str:
+    """Stop a demo session in the database from a request.
+
+    Args:
+        megabase_user_key: API key associated with the user
+        server_steam_id: Steam ID of the server
+
+    Returns:
+        the ID of the polling session stopped.
+    """
+    try:
+        server_steamid64 = int(server_steam_id)
+    except ValueError:
+        server_steamid64 = convert_server_id3_id_to_64_id(server_steam_id)
+
+    with Session() as session:
+        sql = (
+            sa.select(PollingSession)
+            .where(
+                PollingSession.megabase_user_key == megabase_user_key,
+                PollingSession.server_steamid64 == server_steamid64,
+                PollingSession.is_active == True,
+            )
+            .order_by(PollingSession.start_time.desc()).limit(1)
+        )
+        polling_session = session.execute(sql).scalar_one()
+        polling_session.end_time = datetime.now().astimezone(timezone.utc)
+        session.commit()
+
+        stopped_session_id = polling_session.polling_session_id
+        return stopped_session_id
 
 
 def poll_server(steam_server_id: str) -> None:
