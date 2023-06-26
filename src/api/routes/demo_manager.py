@@ -1,7 +1,5 @@
 """Endpoint to manage start and stopping of demo requests."""
 
-import os
-from datetime import datetime
 from enum import Enum
 
 from flask import jsonify, request
@@ -38,29 +36,25 @@ class DemoManagerResource(MethodView):
 
         try:
             request_type = int(kwargs["request_type"])
-            if request_type not in RequestType.valid_request_types():
-                return jsonify(f"Expected request type to be one of {RequestType.valid_request_types()}"), 400
-
-            # check if there is already an instance from this user (use key as this is 1-1 with steam id)
-            megabase_user_key = kwargs["megabase_user_key"]
-            server_steam_id = kwargs["server_steam_id"]
-            is_active_session = utils.is_active_session(megabase_user_key)
-            if is_active_session:
-                return (
-                    jsonify(
-                        f"User is already actively in a session, please close it out before requesting a new session!"
-                    ),
-                    200,
-                )
-
         except ValueError:
-            return jsonify("Expected an integer!"), 400
+            return jsonify("Expected an integer for request_type!"), 400
+        if request_type not in RequestType.valid_request_types():
+            return jsonify(f"Expected request type to be one of {RequestType.valid_request_types()}"), 400
 
-        if request_type == RequestType.START:
+        # check if there is already an instance from this user (use key as this is 1-1 with steam id)
+        megabase_user_key = kwargs["megabase_user_key"]
+        server_steam_id = kwargs["server_steam_id"]
+        is_active_session = utils.is_active_session(megabase_user_key)
+
+        if request_type == RequestType.START.value:
+            if is_active_session:
+                # fmt: off
+                return jsonify(f"User is already actively in a session, please close it out before requesting a new session!"), 200
+                # fmt: on
             polling_session_id = utils.start_demo_session(megabase_user_key, server_steam_id)
             return jsonify(f"User started a session with {polling_session_id}!"), 200
-        elif request_type == RequestType.END:
+        elif request_type == RequestType.END.value:
             if not is_active_session:
                 return jsonify(f"User is not in a session, cannot close session out!"), 400
             polling_session_id = utils.stop_demo_session(megabase_user_key, server_steam_id)
-            jsonify(f"User ended a session with {polling_session_id}!"), 200
+            return jsonify(f"User ended a session with {polling_session_id}!"), 200

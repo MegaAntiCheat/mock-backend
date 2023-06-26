@@ -5,7 +5,6 @@ from flask import jsonify, request
 
 def is_valid_megabase_key(key: str) -> bool:
     """Perform some bs lookup eventually to validate this."""
-    print(key)
     return True
 
 

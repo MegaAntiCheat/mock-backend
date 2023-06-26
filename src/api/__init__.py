@@ -7,6 +7,6 @@ api = Blueprint("api", __name__, url_prefix="/api")
 
 api.add_url_rule(
     "/demomanager",
-    methods=["GET"],
+    methods=["POST"],
     view_func=DemoManagerResource.as_view("demomanager"),
 )
