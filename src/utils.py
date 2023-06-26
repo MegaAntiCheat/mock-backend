@@ -29,7 +29,7 @@ def is_active_session(megabase_user_key: str) -> bool:
     """
     with Session() as session:
         sql = sa.select(PollingSession).where(
-            PollingSession.megabase_user_key == "megabase_user_key", PollingSession.is_active == True
+            PollingSession.megabase_user_key == megabase_user_key, PollingSession.is_active == True
         )
         _is_active_session = session.execute(sql).scalar_one_or_none()
 
